@@ -2,9 +2,10 @@ from flask import Flask, redirect, url_for, session, request, jsonify
 from flask_oauthlib.client import OAuth
 #from flask_oauthlib.contrib.apps import github #import to make requests to GitHub's OAuth
 from flask import render_template
-
+import pymongo
 import pprint
 import os
+
 
 # This code originally from https://github.com/lepture/flask-oauthlib/blob/master/example/github.py
 # Edited by P. Conrad for SPIS 2016 to add getting Client Id and Secret from
@@ -19,7 +20,17 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1' #Remove once done debugging
 app.secret_key = os.environ['SECRET_KEY'] #used to sign session cookies
 oauth = OAuth(app)
 oauth.init_app(app) #initialize the app to be able to make requests for user information
-
+connection_string = os.environ["MONGO_CONNECTION_STRING"]
+db_name = os.environ["MONGO_DBNAME"]
+client = pymongo.MongoClient(connection_string)
+db = client[db_name]
+collection = db['ForumPro'] #1. put the name of your collection in the quotes
+# Send a ping to confirm a successful connection
+try:
+    client.admin.command('ping')
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+except Exception as e:
+    print(e)
 #Set up GitHub as OAuth provider
 github = oauth.remote_app(
     'github',
@@ -41,6 +52,7 @@ github = oauth.remote_app(
 def inject_logged_in():
     is_logged_in = 'github_token' in session #this will be true if the token is in the session and false otherwise
     return {"logged_in":is_logged_in}
+
 
 @app.route('/')
 def home():
