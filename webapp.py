@@ -1,5 +1,6 @@
 from flask import Flask, redirect, url_for, session, request, jsonify
 from flask_oauthlib.client import OAuth
+from datetime import datetime
 #from flask_oauthlib.contrib.apps import github #import to make requests to GitHub's OAuth
 from flask import render_template
 import pymongo
@@ -53,10 +54,33 @@ def inject_logged_in():
     is_logged_in = 'github_token' in session #this will be true if the token is in the session and false otherwise
     return {"logged_in":is_logged_in}
 
+# Route to display the post creation form
+@app.route("/", methods=["GET", "POST"])
+def post():
+    if request.method == "POST":
+        # Get data from the form
+        title = request.form.get("title")
+        content = request.form.get("content")
+        author = request.form.get("author")
+        
+        # Automatically set the current date
+        date = datetime.now().strftime("%Y-%m-%d")  # Format as YYYY-MM-DD HH:MM:SS
 
-@app.route('/')
-def home():
-    return render_template('home.html')
+        # Create the post document
+        new_post = {
+            "title": title,
+            "content": content,
+            "author": author,
+            "date": date
+        }
+
+        # Insert the new post into MongoDB
+        collection.insert_one(new_post)
+
+        # Redirect back to the homepage or another page after posting
+        #return redirect(url_for("Home"))
+
+    return render_template('home.html')  # Display the form to create a post
 
 #redirect to GitHub's OAuth page and confirm callback URL
 @app.route('/login')
@@ -88,13 +112,25 @@ def authorized():
     return render_template('message.html', message=message)
 
 
-@app.route('/page1')
+@app.route('/page1', methods=["GET", "POST"])
 def renderPage1():
     if 'user_data' in session:
         user_data_pprint = pprint.pformat(session['user_data'])#format the user data nicely
     else:
         user_data_pprint = '';
-    return render_template('page1.html',dump_user_data=user_data_pprint)
+    query = request.form.get('query', '')  # Get search query from the form
+    posts = []
+
+    if query:
+        # Perform a text search on the 'title' and 'content' fields
+        posts = collection.find({
+            "$or": [
+                {"title": {"$regex": query, "$options": "i"}},  # case-insensitive match
+                {"content": {"$regex": query, "$options": "i"}}
+            ]
+        })
+
+    return render_template('page1.html',dump_user_data=user_data_pprint, posts=posts, query=query)
 
 @app.route('/page2')
 def renderPage2():

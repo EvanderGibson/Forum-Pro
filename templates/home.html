@@ -4,8 +4,31 @@
 
 {% block content %}
   <h1>Home</h1>
+    <h1>Create a New Forum Post</h1>
 
+ HEAD
 <p>there are no posts yet :(</p>
+=======
+    <form method="POST">
+        <label for="title">Title:</label><br>
+        <input type="text" id="title" name="title" required><br><br>
 
+
+        <label for="content">Content:</label><br>
+        <textarea id="content" name="content" rows="5" required></textarea><br><br>
+
+        <label for="author">Author Name:</label><br>
+        <input type="text" id="author" name="author" required><br><br>
+		
+		<label for="author">location(optional):</label><br>
+        <input type="text" id="location" name="location"><br><br>
+		<button type="">add location</button>
+		<br>
+        <button type="submit">Post</button>
+		
+    </form>
+
+    <br>
+    <a href="/">Back to Home</a>
 
 {% endblock %}
