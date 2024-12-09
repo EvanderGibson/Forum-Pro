@@ -6,12 +6,14 @@ from flask import render_template
 import pymongo
 import pprint
 import os
+from markupsafe import Markup
 
 
 # This code originally from https://github.com/lepture/flask-oauthlib/blob/master/example/github.py
 # Edited by P. Conrad for SPIS 2016 to add getting Client Id and Secret from
 # environment variables, so that this will work on Heroku.
 # Edited by S. Adams for Designing Software for the Web to add comments and remove flash messaging
+# Edited by pierce for his project
 
 app = Flask(__name__)
 
@@ -54,17 +56,30 @@ def inject_logged_in():
     is_logged_in = 'github_token' in session #this will be true if the token is in the session and false otherwise
     return {"logged_in":is_logged_in}
 
+@app.route("/", methods=["GET"])
+def home():
+    ForumPro = collection.find().sort("date", pymongo.DESCENDING) 
+    
+    return render_template('page3.html', ForumPro=ForumPro)
+     
 # Route to display the post creation form
-@app.route("/", methods=["GET", "POST"])
+@app.route("/NewPost", methods=["GET", "POST"])
 def post():
+    #if 'github_token' not in session:
+        # Redirect to login page if user is not logged in
+        #return redirect(url_for('login'))
+    
     if request.method == "POST":
         # Get data from the form
         title = request.form.get("title")
         content = request.form.get("content")
         author = request.form.get("author")
         
+        # Get the author's GitHub username
+        author = session['user_data']['login']
+        
         # Automatically set the current date
-        date = datetime.now().strftime("%Y-%m-%d")  # Format as YYYY-MM-DD HH:MM:SS
+        date = datetime.now().strftime("%Y-%m-%d %I:%M %p")  # Format as YYYY-MM-DD II:MM:SS AM or PM
 
         # Create the post document
         new_post = {
@@ -104,7 +119,7 @@ def authorized():
             session['user_data']=github.get('user').data
             #pprint.pprint(vars(github['/email']))
             #pprint.pprint(vars(github['api/2/accounts/profile/']))
-            message='You were successfully logged in as ' + session['user_data']['login'] + '.'
+            message='You were successfully logged in as ' + session['user_data']['login'] + '. ' + Markup("<a href='http://127.0.0.1:5000/'>Click here to go to homepage!</a>")
         except Exception as inst:
             session.clear()
             print(inst)
@@ -112,7 +127,7 @@ def authorized():
     return render_template('message.html', message=message)
 
 
-@app.route('/page1', methods=["GET", "POST"])
+@app.route('/Search', methods=["GET", "POST"])
 def renderPage1():
     if 'user_data' in session:
         user_data_pprint = pprint.pformat(session['user_data'])#format the user data nicely
@@ -130,9 +145,9 @@ def renderPage1():
             ]
         })
 
-    return render_template('page1.html',dump_user_data=user_data_pprint, posts=posts, query=query)
+    return render_template('page1.html', posts=posts, query=query)
 
-@app.route('/page2')
+@app.route('/Map')
 def renderPage2():
     if "user_data" in session:
          dataPoints1 = pprint.pformat(session['user_data']["bio"])
