@@ -2,26 +2,33 @@
 
 {% block title %}page2{% endblock %}
 
+ {% block heading %}<link rel = "stylesheet" href = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />{%endblock%}
+
 {% block content %}
-  <!DOCTYPE html>
-<html>
-<body>
-
-<h1>My First Google Map</h1>
-
-<div id="googleMap" style="width:100%;height:400px;"></div>
-
+  
+<div id =”my-map” style = “width:800px; height:600px;”>
+	<iframe width="425" height="350" 
+	src="https://www.openstreetmap.org/export/embed.html?bbox=-174.90234375000003%2C11.26461221250444%2C-31.728515625000004%2C66.89559561140706&amp;layer=mapnik" 
+	style="border: 1px solid black">
+	</iframe><br/><small>
+	<a href="https://www.openstreetmap.org/#map=4/45.46/-103.32">View Larger Map</a>
+	</small>
+</div>
+<script src = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 <script>
-function myMap() {
-var mapProp= {
-  center:new google.maps.LatLng(34.420830,-119.698189),
-  zoom:5,
-};
-var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
-}
-</script>
-
-
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKOTDrdj3FXxMcXERMiBEQayIOWmwlvI8&callback=myMap"></script>
-
+ // Creating map options
+ var mapOptions = {
+ center: [17.385044, 78.486671],
+ zoom: 10
+ }
+ 
+ // Creating a map object
+ var map = new L.map(‘map’, mapOptions);
+ 
+ // Creating a Layer object
+ var layer = new     L.TileLayer(‘http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png’);
+ 
+ // Adding layer to the map
+ map.addLayer(layer);
+ </script>
 {% endblock %}

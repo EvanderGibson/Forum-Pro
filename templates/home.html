@@ -2,33 +2,91 @@
 
 {% block title %}Home{% endblock %}
 
+{% block heading %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<style>
+  #map {
+    height: 400px;
+    width: 100%;
+  }
+  .wrap {
+    width: 100%;
+    max-width: 1200px;
+    margin: 30px auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px;
+  }
+  .form {
+    flex: 1 1 300px;
+  }
+  .map-container {
+    flex: 1 1 600px;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
   <h1>Home</h1>
-    <h1>Create a New Forum Post</h1>
+  <h1>Create a New Forum Post</h1>
 
- HEAD
-<p>there are no posts yet :(</p>
-=======
-    <form method="POST">
+  <div class="wrap">
+    <div class="form">
+      <form method="POST">
         <label for="title">Title:</label><br>
         <input type="text" id="title" name="title" required><br><br>
-
 
         <label for="content">Content:</label><br>
         <textarea id="content" name="content" rows="5" required></textarea><br><br>
 
         <label for="author">Author Name:</label><br>
         <input type="text" id="author" name="author" required><br><br>
-		
-		<label for="author">location(optional):</label><br>
-        <input type="text" id="location" name="location"><br><br>
-		<button type="">add location</button>
-		<br>
-        <button type="submit">Post</button>
-		
-    </form>
 
-    <br>
-    <a href="/">Back to Home</a>
+        <label for="latitude">Latitude:</label><br>
+        <input type="text" id="latitude" name="latitude"><br><br>
 
+        <label for="longitude">Longitude:</label><br>
+        <input type="text" id="longitude" name="longitude"><br><br>
+
+        <button type="submit" class="form__btn">Post</button>
+      </form>
+    </div>
+
+    <div class="map-container">
+      <h2>Select a Location (optional)</h2>
+      <div id="map"></div>
+    </div>
+  </div>
+
+  <br>
+  <a href="/">Back to Home</a>
+
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script>
+    window.addEventListener('load', function() {
+      let mapOptions = {
+        center: [51.958, 9.141],
+        zoom: 10
+      }
+      
+      let map = L.map('map', mapOptions);
+      
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+      
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 100);
+      
+      map.on('click', (event) => {
+        map.eachLayer((layer) => {
+          if (layer instanceof L.Marker) {
+            map.removeLayer(layer);
+          }
+        });
+        L.marker([event.latlng.lat, event.latlng.lng]).addTo(map);
+        document.getElementById('latitude').value = event.latlng.lat.toFixed(6);
+        document.getElementById('longitude').value = event.latlng.lng.toFixed(6);
+      });
+    });
+  </script>
 {% endblock %}
