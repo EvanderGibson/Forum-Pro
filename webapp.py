@@ -122,7 +122,7 @@ def authorized():
             session['user_data']=github.get('user').data
             #pprint.pprint(vars(github['/email']))
             #pprint.pprint(vars(github['api/2/accounts/profile/']))
-            message='You were successfully logged in as ' + session['user_data']['login'] + '. ' + Markup("<a href='http://127.0.0.1:5000/'>Click here to go to homepage!</a>")
+            message='You were successfully logged in as ' + session['user_data']['login'] + '. ' + Markup("<a href='/'>Click here to go to homepage!</a>")
         except Exception as inst:
             session.clear()
             print(inst)
