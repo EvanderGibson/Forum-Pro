@@ -74,7 +74,8 @@ def post():
         title = request.form.get("title")
         content = request.form.get("content")
         author = request.form.get("author")
-        
+        latitude = request.form.get("latitude")
+        longitude = request.form.get("longitude")
         # Get the author's GitHub username
         author = session['user_data']['login']
         
@@ -86,7 +87,9 @@ def post():
             "title": title,
             "content": content,
             "author": author,
-            "date": date
+            "date": date,
+            "latitude": latitude,
+            "longitude": longitude
         }
 
         # Insert the new post into MongoDB
