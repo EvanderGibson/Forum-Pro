@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}Home{% endblock %}
+{% block title %}New Post{% endblock %}
 
 {% block heading %}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
@@ -27,23 +27,53 @@
 {% endblock %}
 
 {% block content %}
+<<<<<<< HEAD
+    <h1 class="texty">Create a New Chicken Post</h1>
+		<br>
+	{% if logged_in %}
+=======
   <h1>Home</h1>
   <h1>Create a New Forum Post</h1>
 
+<<<<<<< HEAD
   <div class="wrap">
     <div class="form">
       <form method="POST">
+=======
+ HEAD
+<p>there are no posts yet :(</p>
+=======
+>>>>>>> dab10a94eb45043ced317baba8940823da4bc62a
+    <form method="POST">
+>>>>>>> c69f4ead6e9387002e6be1f97848c6c570d708b4
         <label for="title">Title:</label><br>
         <input type="text" id="title" name="title" required><br><br>
 
         <label for="content">Content:</label><br>
         <textarea id="content" name="content" rows="5" required></textarea><br><br>
 
+<<<<<<< HEAD
         <label for="author">Author Name:</label><br>
         <input type="text" id="author" name="author" required><br><br>
 
         <label for="latitude">Latitude:</label><br>
         <input type="text" id="latitude" name="latitude"><br><br>
+=======
+        <!--<label for="author">Author Name:</label><br>
+        <input type="text" id="author" name="author" required><br><br>--!>
+		
+		<label for="author">location(optional):</label><br>
+        <input type="text" id="location" name="location"><br><br>
+		<button type="">add location</button>
+		<br>
+        <button type="submit">Post</button>
+		
+    </form>
+	{% else %}
+        <p>You need to <a href="{{ url_for('login') }}">login with GitHub</a> to create a post.</p>
+    {% endif %}
+    <br>
+>>>>>>> c69f4ead6e9387002e6be1f97848c6c570d708b4
 
         <label for="longitude">Longitude:</label><br>
         <input type="text" id="longitude" name="longitude"><br><br>

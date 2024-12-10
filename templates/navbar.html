@@ -1,3 +1,8 @@
+<div class="octopus">
+	<header>
+		<h1>CHICKEN PRO</h1>
+	</header>
+</div>
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -14,14 +19,15 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li><a href="/page1">Page 1</a></li>
-        <li><a href="/page2">Page 2</a></li>
+		<li><a href="/NewPost">New Post</a></li>
+        <li><a href="/Search">Search</a></li>
+        <li><a href="/Map">Map</a></li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
 	{% if logged_in %}
-        <li><p class="navbar-text">{{ session['user_data']['name']}}</li>
-        <li><p class="navbar-text">Github userid: {{ session['user_data']['login']}}</li>
+        <!--<li><p class="navbar-text">{{ session['user_data']['name']}}</li>--!>
+        <li><p class="navbar-text">Username: {{ session['user_data']['login']}}</li>
 	{% endif %}
         <li>
 	  {% if logged_in %}
